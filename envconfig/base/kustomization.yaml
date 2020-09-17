@@ -1,0 +1,5 @@
+namespace: kuohwa
+
+resources:
+- system/debug.yaml
+- configmap.yaml
