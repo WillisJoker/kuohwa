@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: debug
+  name: debug
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: debug
+  template:
+    metadata:
+      labels:
+        app: debug
+    spec:
+      containers:
+      - name: default
+        image: asia.gcr.io/airs-develop/base:develop
+        imagePullPolicy: Always
+        command:
+        - tailf
+        - /dev/null
+        volumeMounts: []
+        env: []
+      volumes: []
