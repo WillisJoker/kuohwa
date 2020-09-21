@@ -6,4 +6,4 @@ images:
     newTag: develop
 
 resources:
-- system/gcr_json_key.yaml
+- gcr_json_key.yaml
