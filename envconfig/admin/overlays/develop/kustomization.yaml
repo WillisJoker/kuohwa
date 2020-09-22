@@ -2,4 +2,8 @@ bases:
 - ../../base
 
 resources:
-- service_account.yaml
+- gcr_json_key.yaml
+
+patches:
+- longhorn.yaml
+- kuohwa.yaml

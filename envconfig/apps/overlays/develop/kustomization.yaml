@@ -2,5 +2,8 @@ bases:
 - ../../base
 
 images:
-  - name: asia.gcr.io/airs-develop/base
-    newTag: develop
+- name: asia.gcr.io/airs-develop/base
+  newTag: develop
+
+resources:
+- debug.yaml

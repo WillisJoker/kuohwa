@@ -5,6 +5,12 @@ metadata:
     app.kubernetes.io/name: kuohwa
   name: kuohwa
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: default
+  namespace: kuohwa
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
