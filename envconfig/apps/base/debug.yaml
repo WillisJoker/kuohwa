@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: debug-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: debug
+  name: debug
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 100%
+      maxSurge: 0%
+  selector:
+    matchLabels:
+      app: debug
+  template:
+    metadata:
+      labels:
+        app: debug
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-worker1
+      containers:
+      - name: default
+        image: asia.gcr.io/airs-develop/base:develop
+        imagePullPolicy: Always
+        command:
+        - tailf
+        - /dev/null
+        volumeMounts:
+          - name: vol
+            mountPath: /data
+        env: []
+      volumes:
+        - name: vol
+          persistentVolumeClaim:
+            claimName: debug-pvc
