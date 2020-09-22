@@ -1,2 +1,5 @@
 bases:
 - ../../base
+
+resources:
+- service_account.yaml

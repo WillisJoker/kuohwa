@@ -4,6 +4,3 @@ bases:
 images:
   - name: asia.gcr.io/airs-develop/base
     newTag: develop
-
-resources:
-- gcr_json_key.yaml
