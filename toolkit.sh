@@ -46,8 +46,6 @@ function tkrun() {
         return 1
     fi
     docker run -it --rm \
-        -v "${GOOGLE_APPLICATION_CREDENTIALS}":/var/secrets/google/key.json:ro \
-        -e GOOGLE_APPLICATION_CREDENTIALS=/var/secrets/google/key.json \
         -v "${KUBECONFIG}":/etc/kubernetes/admin.conf:ro \
         -e KUBECONFIG=/etc/kubernetes/admin.conf \
         asia.gcr.io/${project_id}/${component}:develop "$@"
