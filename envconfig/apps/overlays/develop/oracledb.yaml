@@ -37,7 +37,7 @@ spec:
             mountPath: /u01/app/oracle
         env:
           - name: WEB_CONSOLE
-            value: false
+            value: "false"
         ports:
           - containerPort: 1521
       volumes:
