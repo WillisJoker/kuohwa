@@ -7,3 +7,4 @@ images:
 
 resources:
 - debug.yaml
+- oracledb.yaml
