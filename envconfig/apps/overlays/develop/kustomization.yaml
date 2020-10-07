@@ -14,3 +14,7 @@ images:
 resources:
 - debug.yaml
 - oracledb.yaml
+- rwx-example.yaml
+
+patches:
+- storage.yaml

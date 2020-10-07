@@ -288,25 +288,23 @@ rules:
 - apiGroups:
   - ""
   resources:
-#  - configmaps
-#  - endpoints
-#  - persistentvolumeclaims
-#  - persistentvolumeclaims/status
-#  - pods
-#  - replicationcontrollers
-#  - replicationcontrollers/scale
-#  - serviceaccounts
   - services
   - services/status
   verbs:
   - get
   - list
   - watch
-#- apiGroups:
-#  - ""
-#  resources:
-#  - namespaces
-#  verbs:
-#  - get
-#  - list
-#  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-users
+rules:
+- apiGroups:
+  - storage.k8s.io
+  resources:
+  - storageclasses
+  verbs:
+  - get
+  - list
+  - watch

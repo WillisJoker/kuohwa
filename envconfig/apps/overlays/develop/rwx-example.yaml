@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: rwx-example
+  name: rwx-example
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rwx-example
+  template:
+    metadata:
+      labels:
+        app: rwx-example
+    spec:
+      containers:
+      - name: default
+        image: asia.gcr.io/kuohwa/example:develop
+        imagePullPolicy: Always
+        command:
+          - tailf
+          - /dev/null
+        envFrom:
+          - configMapRef:
+              name: global-env
+        volumeMounts:
+          - name: vol
+            mountPath: /data
+        env: []
+      volumes:
+        - name: vol
+          nfs:
+            path: /
+            server: 10.96.112.111

@@ -10,4 +10,4 @@ configMapGenerator:
       - "LOG_FORMAT='%(asctime)s %(levelname)s %(name)s: %(message)s'"
 
 resources:
-- configmap.yaml
+- storage.yaml
