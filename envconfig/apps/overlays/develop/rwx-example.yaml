@@ -5,7 +5,7 @@ metadata:
     app: rwx-example
   name: rwx-example
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: rwx-example
@@ -15,7 +15,7 @@ spec:
         app: rwx-example
     spec:
       nodeSelector:
-        kubernetes.io/hostname: k8s-worker1
+        kubernetes.io/hostname: k8s-master
       containers:
       - name: default
         image: asia.gcr.io/kuohwa/example:develop

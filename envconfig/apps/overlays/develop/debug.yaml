@@ -28,8 +28,6 @@ spec:
       labels:
         app: debug
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: k8s-worker1
       containers:
       - name: default
         image: asia.gcr.io/kuohwa/example:develop
