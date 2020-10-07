@@ -32,11 +32,14 @@ spec:
         kubernetes.io/hostname: k8s-worker1
       containers:
       - name: default
-        image: asia.gcr.io/airs-develop/base:develop
+        image: asia.gcr.io/kuohwa/example:develop
         imagePullPolicy: Always
         command:
-        - tailf
-        - /dev/null
+          - tailf
+          - /dev/null
+        envFrom:
+          - configMapRef:
+              name: global-env
         volumeMounts:
           - name: vol
             mountPath: /data
