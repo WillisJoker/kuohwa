@@ -1,33 +1,21 @@
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: debug-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: longhorn
-  resources:
-    requests:
-      storage: 16Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: debug
-  name: debug
+    app: rwx-example
+  name: rwx-example
 spec:
-  replicas: 1
-  strategy:
-    type: Recreate
+  replicas: 2
   selector:
     matchLabels:
-      app: debug
+      app: rwx-example
   template:
     metadata:
       labels:
-        app: debug
+        app: rwx-example
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-master
       containers:
       - name: default
         image: asia.gcr.io/kuohwa/example:develop
@@ -44,5 +32,6 @@ spec:
         env: []
       volumes:
         - name: vol
-          persistentVolumeClaim:
-            claimName: debug-pvc
+          nfs:
+            path: /
+            server: 10.96.112.111
