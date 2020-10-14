@@ -50,9 +50,11 @@ kind: Service
 metadata:
   name: oracledb
 spec:
+  type: NodePort
   selector:
     app: oracledb
   ports:
     - protocol: TCP
       port: 1521
       targetPort: 1521
+      nodePort: 30007
