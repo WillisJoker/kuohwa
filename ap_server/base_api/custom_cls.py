@@ -17,7 +17,8 @@ from flask_restplus.reqparse import (Argument, HTTPStatus, ParseResult,
 from flask_restplus.utils import unpack
 from utils.authorization import check_roles_permission
 
-RE_REQUIRED = re.compile(r'u?\'(?P<name>.*)\' is a required property', re.I | re.U)
+RE_REQUIRED = re.compile(
+    r'u?\'(?P<name>.*)\' is a required property', re.I | re.U)
 RE_TYPE = re.compile(r'.* is not of type u?\'(?P<type>.*)\'', re.I | re.U)
 RE_ENUM = re.compile(r'.* is not one of (?P<enum>.*)', re.I | re.U)
 
@@ -48,7 +49,8 @@ class CustomArgument(Argument):
 
         if bundle_errors:
             return ValueError(error), errors
-        errors_abort(HTTPStatus.BAD_REQUEST, message=json.dumps(errors, ensure_ascii=False), result=1)
+        errors_abort(HTTPStatus.BAD_REQUEST, message=json.dumps(
+            errors, ensure_ascii=False), result=1)
 
     def parse(self, request, bundle_errors=False):
         '''
@@ -60,7 +62,8 @@ class CustomArgument(Argument):
             dict with the name of the argument and the error message to be
             bundled
         '''
-        bundle_errors = current_app.config.get('BUNDLE_ERRORS', False) or bundle_errors
+        bundle_errors = current_app.config.get(
+            'BUNDLE_ERRORS', False) or bundle_errors
         source = self.source(request)
 
         results = []
@@ -85,11 +88,13 @@ class CustomArgument(Argument):
                         value = value.lower()
 
                         if hasattr(self.choices, '__iter__'):
-                            self.choices = [choice.lower() for choice in self.choices]
+                            self.choices = [choice.lower()
+                                            for choice in self.choices]
 
                     try:
                         if self.action == 'split':
-                            value = [self.convert(v, operator) for v in value.split(SPLIT_CHAR)]
+                            value = [self.convert(v, operator)
+                                     for v in value.split(SPLIT_CHAR)]
                         else:
                             value = self.convert(value, operator)
                     except Exception as error:
@@ -98,7 +103,8 @@ class CustomArgument(Argument):
                         return self.handle_validation_error(error, bundle_errors)
 
                     if self.choices and value not in self.choices:
-                        msg = 'The value \'{0}\' is not a valid choice for \'{1}\'.'.format(value, name)
+                        msg = 'The value \'{0}\' is not a valid choice for \'{1}\'.'.format(
+                            value, name)
                         return self.handle_validation_error(msg, bundle_errors)
 
                     if name in request.unparsed_arguments:
@@ -109,7 +115,8 @@ class CustomArgument(Argument):
             if isinstance(self.location, six.string_types):
                 location = _friendly_location.get(self.location, self.location)
             else:
-                locations = [_friendly_location.get(loc, loc) for loc in self.location]
+                locations = [_friendly_location.get(
+                    loc, loc) for loc in self.location]
                 location = ' or '.join(locations)
             error_msg = '在{0}為缺少必要的參數'.format(location)
             return self.handle_validation_error(error_msg, bundle_errors)
@@ -130,12 +137,15 @@ class CustomArgument(Argument):
 
 class CustomModel(Model):
     def validate(self, data, resolver=None, format_checker=None):
-        validator = Draft4Validator(self.__schema__, resolver=resolver, format_checker=format_checker)
+        validator = Draft4Validator(
+            self.__schema__, resolver=resolver, format_checker=format_checker)
         try:
             validator.validate(data)
         except ValidationError:
-            errors = [self.format_error(e) for e in validator.iter_errors(data)]
-            errors_abort(HTTPStatus.BAD_REQUEST, message=json.dumps(errors, ensure_ascii=False), result=1)
+            errors = [self.format_error(e)
+                      for e in validator.iter_errors(data)]
+            errors_abort(HTTPStatus.BAD_REQUEST, message=json.dumps(
+                errors, ensure_ascii=False), result=1)
 
     def format_error(self, error):
         path = list(error.path)
@@ -160,7 +170,8 @@ class CustomModel(Model):
 class CustomRequestParser(RequestParser):
     def __init__(self, argument_class=CustomArgument, result_class=ParseResult,
                  trim=False, bundle_errors=False):
-        super(CustomRequestParser, self).__init__(argument_class, result_class, trim, bundle_errors)
+        super(CustomRequestParser, self).__init__(
+            argument_class, result_class, trim, bundle_errors)
 
 
 class CustomNamespace(Namespace):
@@ -242,7 +253,8 @@ class CustomMethodView(with_metaclass(MethodViewType, View)):
             return redirect("/", code=302)
 
         if self.allow_roles:
-            allow_roles = self.allow_roles if isinstance(self.allow_roles, list) else [self.allow_roles]
+            allow_roles = self.allow_roles if isinstance(
+                self.allow_roles, list) else [self.allow_roles]
             # 無權限，回首頁(/)
             if not check_roles_permission(*allow_roles):
                 return redirect("/", code=302)
@@ -257,7 +269,7 @@ class CustomResource(Resource, CustomMethodView):
 
     def dispatch_request(self, *args, **kwargs):
         # Taken from flask
-        #noinspection PyUnresolvedReferences
+        # noinspection PyUnresolvedReferences
         meth = getattr(self, request.method.lower(), None)
         if meth is None and request.method == 'HEAD':
             meth = getattr(self, 'get', None)
@@ -266,11 +278,13 @@ class CustomResource(Resource, CustomMethodView):
         self.validate_payload(meth)
 
         if self.allow_roles:
-            allow_roles = self.allow_roles if isinstance(self.allow_roles, list) else [self.allow_roles]
+            allow_roles = self.allow_roles if isinstance(
+                self.allow_roles, list) else [self.allow_roles]
             # 無權限，噴ERROR
             if not check_roles_permission(*allow_roles):
                 errors_msg = "401 Unauthorized: the role unallowable to access"
-                errors_abort(HTTPStatus.UNAUTHORIZED, message=errors_msg, result=1)
+                errors_abort(HTTPStatus.UNAUTHORIZED,
+                             message=errors_msg, result=1)
 
         resp = meth(*args, **kwargs)
 
@@ -278,7 +292,8 @@ class CustomResource(Resource, CustomMethodView):
             return resp
         representations = self.representations or {}
 
-        mediatype = request.accept_mimetypes.best_match(representations, default=None)
+        mediatype = request.accept_mimetypes.best_match(
+            representations, default=None)
         if mediatype in representations:
             data, code, headers = unpack(resp)
             resp = representations[mediatype](data, code, headers)

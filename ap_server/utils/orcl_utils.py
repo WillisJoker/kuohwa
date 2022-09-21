@@ -3,8 +3,7 @@ import os
 import logging
 import cx_Oracle
 from configs import (ORCL_HOST, ORCL_PASSWD, ORCL_PORT, ORCL_SERVICE_NAME,
-                    ORCL_USER)
-
+                     ORCL_USER)
 logger = logging.getLogger(__name__)
 
 
@@ -13,7 +12,7 @@ class OracleAccess(object):
     pool = None
 
     @staticmethod
-    def initialise(min=1, max=2, increment=1, encoding="UTF-8"):
+    def initialise(min=1, max=2, increment=1, encoding="UTF-8"):  # 初始化
         os.environ['NLS_LANG'] = 'TRADITIONAL CHINESE_TAIWAN.AL32UTF8'
         OracleAccess.arraysize = 100
         try:
@@ -29,19 +28,19 @@ class OracleAccess(object):
         except cx_Oracle.DatabaseError as e:
             error_obj, = e.args
             logger.error("%s: %s" % (error_obj.code, error_obj.message))
-    
+
     @staticmethod
     def _get_conn():
         return OracleAccess.pool.acquire()
-    
+
     @staticmethod
     def _get_cursor(conn, arraysize=None):
         cursor = conn.cursor()
         cursor.arraysize = arraysize if arraysize else OracleAccess.arraysize
         return cursor
-    
+
     @staticmethod
-    def query(sql, args=[], arraysize=None):
+    def query(sql, args=[], arraysize=None):  # 查
         """
         Args:
             sql(string)
@@ -70,8 +69,8 @@ class OracleAccess(object):
             if conn:
                 OracleAccess.pool.release(conn)
 
-    @staticmethod      
-    def insert(sql, rows, arraysize=None):
+    @staticmethod
+    def insert(sql, rows, arraysize=None):  # 增
         """
         Args:
             sql(string)
@@ -80,7 +79,7 @@ class OracleAccess(object):
         try:
             conn = OracleAccess._get_conn()
             cursor = OracleAccess._get_cursor(conn=conn, arraysize=arraysize)
-            cursor.executemany(sql, rows)
+            cursor.execute(sql, rows)
             conn.commit()
         finally:
             if conn:
@@ -96,6 +95,36 @@ class OracleAccess(object):
             conn = OracleAccess._get_conn()
             cursor = OracleAccess._get_cursor(conn=conn, arraysize=arraysize)
             cursor.execute(sql, args)
+            conn.commit()
+        finally:
+            if conn:
+                OracleAccess.pool.release(conn)
+
+    @staticmethod
+    def delete(sql, args=None, arraysize=None):
+        """
+        Args:
+            sql(string)
+        """
+        try:
+            conn = OracleAccess._get_conn()
+            cursor = OracleAccess._get_cursor(conn=conn, arraysize=arraysize)
+            cursor.execute(sql)
+            conn.commit()
+        finally:
+            if conn:
+                OracleAccess.pool.release(conn)
+
+    @staticmethod
+    def update(sql, args=None, arraysize=None):
+        """
+        Args:
+            sql(string)
+        """
+        try:
+            conn = OracleAccess._get_conn()
+            cursor = OracleAccess._get_cursor(conn=conn, arraysize=arraysize)
+            cursor.execute(sql)
             conn.commit()
         finally:
             if conn:

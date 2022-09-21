@@ -1,6 +1,7 @@
 
 from utils.orcl_utils import OracleAccess
 
+
 class Account(object):
     @staticmethod
     def login(username, passwd):

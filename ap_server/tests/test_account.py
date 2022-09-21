@@ -4,6 +4,7 @@ import json
 from tests.base import BaseTestCase
 from utils.orcl_utils import OracleAccess
 
+
 def login_user(self):
     return self.client.post(
         '/api/account/login',
